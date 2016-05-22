@@ -13,3 +13,12 @@ Hint: In the usual infix notation, operators are written between operands. In po
 Infix notation: 3 * ( 2 + 5)
 Postfix notation: 3 2 5 + *
 ```
+
+Currently, the interpreter implentation is following the standard of my old compiler implementations. 
+
+It supports the four basic operations: +, -, *, /
+
+It was built using TDD, to test it use the following maven command:
+```
+mvn clean test
+```

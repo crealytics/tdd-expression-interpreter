@@ -1,6 +1,5 @@
 package org.ttdexpr.ast;
 
-import org.ttdexpr.eval.Expr;
 import org.ttdexpr.lexer.TokenizerEnum;
 
 import static org.ttdexpr.lexer.TokenizerEnum.*;

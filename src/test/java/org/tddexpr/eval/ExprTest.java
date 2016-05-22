@@ -16,6 +16,13 @@ public class ExprTest {
     }
 
     @Test
+    public void testExprWithOneValueWithBracketsTest() {
+        ExprInterpreter exprInterpreter = new ExprInterpreter("(((5)))");
+
+        Assert.assertEquals(5, exprInterpreter.eval());
+    }
+
+    @Test
     public void testExprWithMultiplicationTest() {
         ExprInterpreter exprInterpreter = new ExprInterpreter("5 * 2");
 
@@ -37,10 +44,17 @@ public class ExprTest {
     }
 
     @Test
+    public void textExprWithDivTest() {
+        ExprInterpreter exprInterpreter = new ExprInterpreter("20 / 5");
+
+        Assert.assertEquals(4, exprInterpreter.eval());
+    }
+
+    @Test
     public void testExprComposite1() {
         ExprInterpreter exprInterpreter = new ExprInterpreter("3 * (2 + 4)");
 
-        Assert.assertEquals(21, exprInterpreter.eval());
+        Assert.assertEquals(18, exprInterpreter.eval());
     }
 
     @Test
@@ -63,5 +77,19 @@ public class ExprTest {
         ExprInterpreter exprInterpreter = new ExprInterpreter("(3 - 4) * (3 * ( 2 + 5 * 2))");
 
         Assert.assertEquals(-36, exprInterpreter.eval());
+    }
+
+    @Test
+    public void testExprComposite5() {
+        ExprInterpreter exprInterpreter = new ExprInterpreter("(3 - 4) * (3 * ( 2 + 4 / 2))");
+
+        Assert.assertEquals(-12, exprInterpreter.eval());
+    }
+
+    @Test
+    public void testExprComposite6() {
+        ExprInterpreter exprInterpreter = new ExprInterpreter("(3 * ( 2 + 4 / 2)) / (3 - 4)");
+
+        Assert.assertEquals(-12, exprInterpreter.eval());
     }
 }

@@ -13,17 +13,13 @@ case class CompositeExpr(left: Expr, right: Expr, var op: TokenizerEnum) extends
     if (op == null) {
       op = INVALID
     }
-    var rightValue: Int = 0
-    if (right == null) {
-      if (op == PLUS || op == MINUS) {
-        rightValue = 0
+    val rightValue: Int =
+      if (right == null) {
+        if (op == MULT || op == DIV) 1
+        else 0
+      } else {
+        right.eval()
       }
-      if (op == MULT || op == DIV) {
-        rightValue = 1
-      }
-    } else {
-      rightValue = right.eval()
-    }
     op match {
       case PLUS => left.eval() + rightValue
       case MINUS => left.eval() - rightValue

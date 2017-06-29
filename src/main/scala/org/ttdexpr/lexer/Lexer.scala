@@ -45,14 +45,14 @@ class Lexer(private var input: String) {
     }
 
     if (java.lang.Character.isDigit(tokenArray(tokenPos))) {
-      val acumulator: StringBuffer = new StringBuffer()
-      while (tokenPos != tokenArray.length &&
-               java.lang.Character.isDigit(tokenArray(tokenPos))) {
-        acumulator.append(tokenArray(tokenPos))
-        tokenPos += 1
-      }
+      // takeWhile method comes from the implicit wrapper class StringOps
+      // which among many other nice additions allows you to treat a String
+      // like a collection of characters.
+      // Notice also, that Character.isDigit is automatically lifted from a method to a Function.
+      val digits = tokenArray.substring(tokenPos).takeWhile(java.lang.Character.isDigit)
+      tokenPos += digits.length
       currentToken = TokenizerEnum.NUMBER
-      try lastValue = java.lang.Integer.parseInt(acumulator.toString)
+      try lastValue = java.lang.Integer.parseInt(digits)
       catch {
         // Exception handling is done via pattern matching
         case e: Exception => logger.info("There was an error parsing number.")

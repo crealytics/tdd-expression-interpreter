@@ -99,7 +99,7 @@ class ExprInterpreter(input: String) {
     var theExpr: Expr = null
     if (lexer.getCurrentToken == TokenizerEnum.NUMBER) {
       lexer.nextToken()
-      new Value(lexer.getLastValue)
+      return new Value(lexer.getLastValue)
     }
     if (lexer.getCurrentToken == TokenizerEnum.LEFT_BRACKET) {
       lexer.nextToken()

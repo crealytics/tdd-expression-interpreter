@@ -20,7 +20,7 @@ object Lexer {
   */
 class Lexer(private var input: String) {
 
-  private var tokenArray: Array[Char] = input.toCharArray()
+  private var tokenArray: String = input
 
   private var tokenPos: Int = 0
 

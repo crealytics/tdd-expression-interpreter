@@ -24,7 +24,9 @@ class Lexer(private var input: String) {
 
   private var tokenPos: Int = 0
 
+  // This annotation auto-generates getters (for both var and val) and setters (for var)
   @BeanProperty
+  // The underscore initializes to the default value which is null for objects and 0 for primitive numeric types
   var lastValue: Int = _
 
   @BeanProperty
@@ -52,9 +54,11 @@ class Lexer(private var input: String) {
       currentToken = TokenizerEnum.NUMBER
       try lastValue = java.lang.Integer.parseInt(acumulator.toString)
       catch {
+        // Exception handling is done via pattern matching
         case e: Exception => logger.info("There was an error parsing number.")
       }
     } else {
+      // In contrast to Java's switch ... case, Scala's match case doesn't need break statements
       tokenArray(tokenPos) match {
         case '(' => currentToken = TokenizerEnum.LEFT_BRACKET
         case ')' => currentToken = TokenizerEnum.RIGHT_BRACKET
@@ -63,7 +67,6 @@ class Lexer(private var input: String) {
         case '/' => currentToken = TokenizerEnum.DIV
         case '*' => currentToken = TokenizerEnum.MULT
         case _ => //break
-
       }
       tokenPos += 1
     }

@@ -37,12 +37,7 @@ class Lexer(private var input: String) {
       currentToken = TokenizerEnum.EOF
       return
     }
-    while (
-      (tokenArray(tokenPos) == ' ' ||
-         tokenArray(tokenPos) == '\n' ||
-         tokenArray(tokenPos) == '\t')) {
-      tokenPos += 1
-    }
+    tokenPos += tokenArray.substring(tokenPos).takeWhile(Seq(' ', '\n', '\t').contains).length
 
     if (java.lang.Character.isDigit(tokenArray(tokenPos))) {
       // takeWhile method comes from the implicit wrapper class StringOps

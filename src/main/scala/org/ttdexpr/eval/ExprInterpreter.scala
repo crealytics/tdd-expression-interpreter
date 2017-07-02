@@ -52,44 +52,35 @@ class ExprInterpreter(input: String) {
 
   private def sum(): Expr = {
     val left: Expr = product()
-    var right: Expr = null
-    var op: TokenizerEnum = null
-    if (lexer.getCurrentToken == TokenizerEnum.PLUS || lexer.getCurrentToken == TokenizerEnum.MINUS) {
-      if (lexer.getCurrentToken == TokenizerEnum.PLUS) {
-        op = TokenizerEnum.PLUS
-        lexer.nextToken()
-      }
-      if (lexer.getCurrentToken == TokenizerEnum.MINUS) {
-        op = TokenizerEnum.MINUS
-        lexer.nextToken()
-      }
-      if (lexer.getCurrentToken == TokenizerEnum.NUMBER ||
-          lexer.getCurrentToken == TokenizerEnum.LEFT_BRACKET) {
-        right = product()
-      }
+    val (opOption, rightOption) = lexer.getCurrentToken match {
+      case TokenizerEnum.PLUS => lexer.nextToken; (Some(TokenizerEnum.PLUS), productIfNumberOption)
+      case TokenizerEnum.MINUS => lexer.nextToken; (Some(TokenizerEnum.MINUS), productIfNumberOption)
+      case _ => (None, None)
     }
-    new CompositeExpr(left, Option(right), Option(op))
+    new CompositeExpr(left, rightOption, opOption)
   }
+
+  private def productIfNumberOption(): Option[Expr] =
+    if (lexer.getCurrentToken == TokenizerEnum.NUMBER ||
+          lexer.getCurrentToken == TokenizerEnum.LEFT_BRACKET)
+      Some(product())
+    else None
 
   private def product(): Expr = {
     val left: Expr = value()
-    var right: Expr = null
-    var op: TokenizerEnum = null
-    if (lexer.getCurrentToken == TokenizerEnum.MULT || lexer.getCurrentToken == TokenizerEnum.DIV) {
-      if (lexer.getCurrentToken == TokenizerEnum.MULT) {
-        op = TokenizerEnum.MULT
-        lexer.nextToken()
-      } else if (lexer.getCurrentToken == TokenizerEnum.DIV) {
-        op = TokenizerEnum.DIV
-        lexer.nextToken()
-      }
-      if (lexer.getCurrentToken == TokenizerEnum.NUMBER ||
-          lexer.getCurrentToken == TokenizerEnum.LEFT_BRACKET) {
-        right = value()
-      }
+    val (opOption, rightOption) = lexer.getCurrentToken match {
+      case TokenizerEnum.MULT => lexer.nextToken; (Some(TokenizerEnum.MULT), valueIfNumberOption)
+      case TokenizerEnum.DIV => lexer.nextToken; (Some(TokenizerEnum.DIV), valueIfNumberOption)
+      case _ => (None, None)
     }
-    new CompositeExpr(left, Option(right), Option(op))
+    new CompositeExpr(left, rightOption, opOption)
   }
+
+  private def valueIfNumberOption(): Option[Expr] =
+    if (lexer.getCurrentToken == TokenizerEnum.NUMBER ||
+          lexer.getCurrentToken == TokenizerEnum.LEFT_BRACKET)
+      Some(value())
+    else None
 
   private def value(): Expr = {
     if (lexer.getCurrentToken == TokenizerEnum.NUMBER) {

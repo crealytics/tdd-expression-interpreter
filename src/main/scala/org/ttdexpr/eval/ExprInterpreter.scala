@@ -50,19 +50,16 @@ class ExprInterpreter(input: String) {
 
   private def expr(): Expr = sum()
 
-  private def sum(): Expr = {
-    val left: Expr = product()
-    val (opOption, rightOption) = lexer.getCurrentToken match {
-      case op @ (TokenizerEnum.PLUS | TokenizerEnum.MINUS) => lexer.nextToken; (Some(op), ifNumberOption(product()))
-      case _ => (None, None)
-    }
-    new CompositeExpr(left, rightOption, opOption)
-  }
+  private def sum(): Expr =
+    compositeExpression(product(), TokenizerEnum.PLUS, TokenizerEnum.MINUS)
 
-  private def product(): Expr = {
-    val left: Expr = value()
+  private def product(): Expr =
+    compositeExpression(value(), TokenizerEnum.MULT, TokenizerEnum.DIV)
+
+  private def compositeExpression(childExpression: => Expr, tokens: TokenizerEnum*) = {
+    val left: Expr = childExpression
     val (opOption, rightOption) = lexer.getCurrentToken match {
-      case op @ (TokenizerEnum.MULT | TokenizerEnum.DIV) => lexer.nextToken; (Some(op), ifNumberOption(value()))
+      case op if tokens.contains(op) => lexer.nextToken; (Some(op), ifNumberOption(childExpression))
       case _ => (None, None)
     }
     new CompositeExpr(left, rightOption, opOption)

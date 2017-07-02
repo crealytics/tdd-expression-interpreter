@@ -53,8 +53,7 @@ class ExprInterpreter(input: String) {
   private def sum(): Expr = {
     val left: Expr = product()
     val (opOption, rightOption) = lexer.getCurrentToken match {
-      case TokenizerEnum.PLUS => lexer.nextToken; (Some(TokenizerEnum.PLUS), productIfNumberOption)
-      case TokenizerEnum.MINUS => lexer.nextToken; (Some(TokenizerEnum.MINUS), productIfNumberOption)
+      case op @ (TokenizerEnum.PLUS | TokenizerEnum.MINUS) => lexer.nextToken; (Some(op), productIfNumberOption)
       case _ => (None, None)
     }
     new CompositeExpr(left, rightOption, opOption)
@@ -69,8 +68,7 @@ class ExprInterpreter(input: String) {
   private def product(): Expr = {
     val left: Expr = value()
     val (opOption, rightOption) = lexer.getCurrentToken match {
-      case TokenizerEnum.MULT => lexer.nextToken; (Some(TokenizerEnum.MULT), valueIfNumberOption)
-      case TokenizerEnum.DIV => lexer.nextToken; (Some(TokenizerEnum.DIV), valueIfNumberOption)
+      case op @ (TokenizerEnum.MULT | TokenizerEnum.DIV) => lexer.nextToken; (Some(op), valueIfNumberOption)
       case _ => (None, None)
     }
     new CompositeExpr(left, rightOption, opOption)

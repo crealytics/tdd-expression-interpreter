@@ -21,7 +21,7 @@ object ExprInterpreter {
   * Created by rodrigonc on 18/05/16.
   */
 class ExprInterpreter(input: String) {
-  private var lexer: Lexer = new Lexer(input)
+  private val lexer: Lexer = new Lexer(input)
 
   def eval(): Int = {
     val expr: Expr = buildAST()
@@ -37,12 +37,11 @@ class ExprInterpreter(input: String) {
    * */
 
   private def buildAST(): Expr = {
-    var theExpr: Expr = null
     lexer.nextToken()
     if (lexer.getCurrentToken == TokenizerEnum.EOF) {
       throw new Exception("Unexpected end of expression")
     }
-    theExpr = expr()
+    val theExpr: Expr = expr()
     if (lexer.getCurrentToken != TokenizerEnum.EOF) {
       throw new Exception("Expected end of expression")
     }
@@ -52,10 +51,9 @@ class ExprInterpreter(input: String) {
   private def expr(): Expr = sum()
 
   private def sum(): Expr = {
-    var left: Expr = null
+    val left: Expr = product()
     var right: Expr = null
     var op: TokenizerEnum = null
-    left = product()
     if (lexer.getCurrentToken == TokenizerEnum.PLUS || lexer.getCurrentToken == TokenizerEnum.MINUS) {
       if (lexer.getCurrentToken == TokenizerEnum.PLUS) {
         op = TokenizerEnum.PLUS
@@ -74,16 +72,14 @@ class ExprInterpreter(input: String) {
   }
 
   private def product(): Expr = {
-    var left: Expr = null
+    val left: Expr = value()
     var right: Expr = null
     var op: TokenizerEnum = null
-    left = value()
     if (lexer.getCurrentToken == TokenizerEnum.MULT || lexer.getCurrentToken == TokenizerEnum.DIV) {
       if (lexer.getCurrentToken == TokenizerEnum.MULT) {
         op = TokenizerEnum.MULT
         lexer.nextToken()
-      }
-      if (lexer.getCurrentToken == TokenizerEnum.DIV) {
+      } else if (lexer.getCurrentToken == TokenizerEnum.DIV) {
         op = TokenizerEnum.DIV
         lexer.nextToken()
       }
@@ -96,7 +92,6 @@ class ExprInterpreter(input: String) {
   }
 
   private def value(): Expr = {
-    var theExpr: Expr = null
     if (lexer.getCurrentToken == TokenizerEnum.NUMBER) {
       lexer.nextToken()
       return new Value(lexer.getLastValue)
@@ -104,7 +99,7 @@ class ExprInterpreter(input: String) {
     if (lexer.getCurrentToken == TokenizerEnum.LEFT_BRACKET) {
       lexer.nextToken()
     }
-    theExpr = expr()
+    val theExpr: Expr = expr()
     if (lexer.getCurrentToken == TokenizerEnum.RIGHT_BRACKET) {
       lexer.nextToken()
     }

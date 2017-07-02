@@ -53,31 +53,25 @@ class ExprInterpreter(input: String) {
   private def sum(): Expr = {
     val left: Expr = product()
     val (opOption, rightOption) = lexer.getCurrentToken match {
-      case op @ (TokenizerEnum.PLUS | TokenizerEnum.MINUS) => lexer.nextToken; (Some(op), productIfNumberOption)
+      case op @ (TokenizerEnum.PLUS | TokenizerEnum.MINUS) => lexer.nextToken; (Some(op), ifNumberOption(product()))
       case _ => (None, None)
     }
     new CompositeExpr(left, rightOption, opOption)
   }
-
-  private def productIfNumberOption(): Option[Expr] =
-    if (lexer.getCurrentToken == TokenizerEnum.NUMBER ||
-          lexer.getCurrentToken == TokenizerEnum.LEFT_BRACKET)
-      Some(product())
-    else None
 
   private def product(): Expr = {
     val left: Expr = value()
     val (opOption, rightOption) = lexer.getCurrentToken match {
-      case op @ (TokenizerEnum.MULT | TokenizerEnum.DIV) => lexer.nextToken; (Some(op), valueIfNumberOption)
+      case op @ (TokenizerEnum.MULT | TokenizerEnum.DIV) => lexer.nextToken; (Some(op), ifNumberOption(value()))
       case _ => (None, None)
     }
     new CompositeExpr(left, rightOption, opOption)
   }
 
-  private def valueIfNumberOption(): Option[Expr] =
+  private def ifNumberOption(calc: => Expr): Option[Expr] =
     if (lexer.getCurrentToken == TokenizerEnum.NUMBER ||
           lexer.getCurrentToken == TokenizerEnum.LEFT_BRACKET)
-      Some(value())
+      Some(calc)
     else None
 
   private def value(): Expr = {

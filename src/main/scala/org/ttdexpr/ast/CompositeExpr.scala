@@ -7,24 +7,15 @@ import org.ttdexpr.lexer.TokenizerEnum._
 /**
   * Created by rodrigonc on 22/05/16.
   */
-case class CompositeExpr(left: Expr, right: Expr, var op: TokenizerEnum) extends Expr {
+case class CompositeExpr(left: Expr, right: Option[Expr], val op: Option[TokenizerEnum]) extends Expr {
 
   def eval(): Int = {
-    if (op == null) {
-      op = INVALID
-    }
-    val rightValue: Int =
-      if (right == null) {
-        if (op == MULT || op == DIV) 1
-        else 0
-      } else {
-        right.eval()
-      }
+    val rightValue: Option[Int] = right.map(_.eval)
     op match {
-      case PLUS => left.eval() + rightValue
-      case MINUS => left.eval() - rightValue
-      case DIV => left.eval() / rightValue
-      case MULT => left.eval() * rightValue
+      case Some(PLUS) => left.eval() + rightValue.getOrElse(0)
+      case Some(MINUS) => left.eval() - rightValue.getOrElse(0)
+      case Some(DIV) => left.eval() / rightValue.getOrElse(1)
+      case Some(MULT) => left.eval() * rightValue.getOrElse(1)
       case _ => left.eval()
 
     }

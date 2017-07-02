@@ -70,7 +70,7 @@ class ExprInterpreter(input: String) {
         right = product()
       }
     }
-    new CompositeExpr(left, right, op)
+    new CompositeExpr(left, Option(right), Option(op))
   }
 
   private def product(): Expr = {
@@ -92,7 +92,7 @@ class ExprInterpreter(input: String) {
         right = value()
       }
     }
-    new CompositeExpr(left, right, op)
+    new CompositeExpr(left, Option(right), Option(op))
   }
 
   private def value(): Expr = {
